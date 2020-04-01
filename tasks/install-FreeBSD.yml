@@ -1,0 +1,6 @@
+---
+
+- name: Install mongodb
+  pkgng:
+    name: mongodb
+    state: present

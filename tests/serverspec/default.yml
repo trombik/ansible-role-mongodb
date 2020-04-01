@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  roles:
+    - ansible-role-mongodb
+  vars:
+    mongodb_config: ""

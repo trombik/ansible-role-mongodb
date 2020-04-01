@@ -1,0 +1,3 @@
+---
+__mongodb_db_dir: /var/db/mongodb
+__mongodb_conf_dir: /usr/local/etc/mongodb
