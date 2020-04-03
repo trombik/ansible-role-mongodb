@@ -4,3 +4,11 @@
   service:
     name: "{{ mongodb_service }}"
     state: restarted
+  notify:
+    - Wait for mongodb
+
+- name: Wait for mongodb
+  wait_for:
+    host: "{{ mongodb_host }}"
+    port: "{{ mongodb_port }}"
+    delay: 5

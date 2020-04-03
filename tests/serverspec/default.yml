@@ -7,6 +7,8 @@
     os_mongodb_extra_packages:
       FreeBSD:
         - databases/mongodb40-tools
+      Debian:
+        - mongo-tools
     mongodb_extra_packages: "{{ os_mongodb_extra_packages[ansible_os_family] }}"
     mongodb_admin_users:
       - name: root
@@ -32,47 +34,56 @@
         database: admin
         state: absent
 
+    os_fork:
+      FreeBSD: "true"
+      Debian: "false"
     mongodb_config: |
       security:
         authorization: enabled
-      systemLog:
-        destination: file
-        logAppend: true
-        path: {{ mongodb_log_file }}
       storage:
         dbPath: {{ mongodb_db_dir }}
         journal:
           enabled: true
       processManagement:
-        fork: true  # fork and run in background
+        fork: {{ os_fork[ansible_os_family] }}
         pidFilePath: {{ mongodb_db_dir }}/mongod.lock
         timeZoneInfo: /usr/share/zoneinfo
       net:
         port: {{ mongodb_port }}
         bindIp: {{ mongodb_host }}
+      systemLog:
+        verbosity: 1
+        path: {{ mongodb_log_file }}
+        logAppend: true
+        destination: file
+        logRotate: reopen
 
     mongodb_config_init_auth: |
       security:
         authorization: disabled
-      systemLog:
-        destination: file
-        logAppend: true
-        path: {{ mongodb_log_file }}
       storage:
         dbPath: {{ mongodb_db_dir }}
         journal:
           enabled: true
       processManagement:
-        fork: true  # fork and run in background
+        fork: {{ os_fork[ansible_os_family] }}
         pidFilePath: {{ mongodb_db_dir }}/mongod.lock
         timeZoneInfo: /usr/share/zoneinfo
       net:
         port: {{ mongodb_port }}
         bindIp: {{ mongodb_host }}
+      systemLog:
+        verbosity: 1
+        path: {{ mongodb_log_file }}
+        logAppend: true
+        destination: file
+        logRotate: reopen
 
     os_mongodb_flags:
       FreeBSD: |
-        mongod_flags="--logpath {{ mongodb_log_file }} --logappend --setParameter=disabledSecureAllocatorDomains=\\*"
+        mongod_flags="--setParameter=disabledSecureAllocatorDomains=\\*"
         mongod_config="{{ mongodb_conf_file }}"
         mongod_dbpath="{{ mongodb_db_dir }}"
+      Debian: |
+        DAEMON_OPTS="--journal"
     mongodb_flags: "{{ os_mongodb_flags[ansible_os_family] }}"

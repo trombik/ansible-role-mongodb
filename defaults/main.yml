@@ -8,7 +8,7 @@ mongodb_log_file: "{{ mongodb_log_dir }}/mongod.log"
 mongodb_db_dir: "{{ __mongodb_db_dir }}"
 mongodb_service: "{{ __mongodb_service }}"
 mongodb_conf_dir: "{{ __mongodb_conf_dir }}"
-mongodb_conf_file: "{{ mongodb_conf_dir }}/mongod.conf"
+mongodb_conf_file: "{{ mongodb_conf_dir }}/mongodb.conf"
 mongodb_flags: ""
 mongodb_debug: no
 mongodb_port: "27017"

@@ -6,11 +6,6 @@ Manage `mongodb`. It does not support replication and sharding.
 
 The role runs `flush_handlers` during the play.
 
-## Notes for FreeBSD users
-
-The role assumes path to the configuration file is
-`/usr/local/etc/mongod.conf`, not `/usr/local/etc/mongodb.conf`.
-
 # Requirements
 
 None
@@ -28,7 +23,7 @@ None
 | `mongodb_db_dir` | path to database directory | `{{ __mongodb_db_dir }}` |
 | `mongodb_service` | service name of `mongodb` | `{{ __mongodb_service }}` |
 | `mongodb_conf_dir` | path to configuration directory | `{{ __mongodb_conf_dir }}` |
-| `mongodb_conf_file` | path to `mongod.conf` | `{{ mongodb_conf_dir }}/mongod.conf` |
+| `mongodb_conf_file` | path to `mongod.conf` | `{{ mongodb_conf_dir }}/mongodb.conf` |
 | `mongodb_flags` | TBW | `""` |
 | `mongodb_debug` | if true, disable `no_log` in the role | `no` |
 | `mongodb_port` | listening port | `27017` |
@@ -48,6 +43,18 @@ This is a list of dict. Each element is passed to
 
 Same as `mongodb_users` but admin user. The first user is used when creating
 `mongodb_users` as `login_user`.
+
+## Debian
+
+| Variable | Default |
+|----------|---------|
+| `__mongodb_user` | `mongodb` |
+| `__mongodb_group` | `mongodb` |
+| `__mongodb_package` | `mongodb` |
+| `__mongodb_log_dir` | `/var/log/mongodb` |
+| `__mongodb_db_dir` | `/var/lib/mongodb` |
+| `__mongodb_service` | `mongodb` |
+| `__mongodb_conf_dir` | `/etc` |
 
 ## FreeBSD
 
