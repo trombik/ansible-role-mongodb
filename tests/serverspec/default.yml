@@ -1,7 +1,9 @@
 ---
 - hosts: localhost
   roles:
-    - ansible-role-mongodb
+    - name: trombik.redhat_repo
+      when: ansible_os_family == 'RedHat'
+    - name: ansible-role-mongodb
   vars:
     mongodb_debug: yes
     os_mongodb_extra_packages:
@@ -10,6 +12,7 @@
       Debian:
         - mongo-tools
       OpenBSD: []
+      RedHat: []
     mongodb_extra_packages: "{{ os_mongodb_extra_packages[ansible_os_family] }}"
     mongodb_admin_users:
       - name: root
@@ -39,6 +42,7 @@
       FreeBSD: "true"
       Debian: "false"
       OpenBSD: "true"
+      RedHat: "false"
     mongodb_config: |
       security:
         authorization: enabled
@@ -90,4 +94,18 @@
         DAEMON_OPTS="--journal"
       OpenBSD:
         -f {{ mongodb_conf_file }}
+      RedHat: ""
     mongodb_flags: "{{ os_mongodb_flags[ansible_os_family] }}"
+
+    pip_packaes:
+      - pymongo
+    redhat_repo:
+      mongo:
+        baseurl: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/
+        gpgcheck: yes
+        enabled: yes
+        gpgkey: https://www.mongodb.org/static/pgp/server-4.2.asc
+      epel:
+        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+        gpgcheck: yes
+        enabled: yes
