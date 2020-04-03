@@ -2,8 +2,8 @@ require "spec_helper"
 require "serverspec"
 
 package = "mongodb"
-service = "mongod"
-config  = "/etc/mongod.conf"
+service = "mongodb"
+config  = "/etc/mongodb.conf"
 user    = "mongodb"
 group   = "mongodb"
 ports   = [27_017]
@@ -17,7 +17,8 @@ users = [
 
 case os[:family]
 when "freebsd"
-  config = "/usr/local/etc/mongod.conf"
+  service = "mongod"
+  config = "/usr/local/etc/mongodb.conf"
   db_dir = "/var/db/mongodb"
   package = "databases/mongodb40"
   extra_packages = %w[databases/mongodb40-tools databases/pymongo]
@@ -45,6 +46,19 @@ describe file(log_dir) do
   it { should be_grouped_into group }
 end
 
+describe file "#{log_dir}/mongod.log" do
+  it { should exist }
+  it { should be_file }
+  case os[:family]
+  when "ubuntu"
+    it { should be_mode 644 }
+  else
+    it { should be_mode 600 }
+  end
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+end
+
 describe file(db_dir) do
   it { should exist }
   it { should be_mode 755 }
@@ -57,6 +71,12 @@ when "freebsd"
   describe file("/etc/rc.conf.d/mongod") do
     it { should be_file }
     its(:content) { should match(/Managed by ansible/) }
+  end
+when "ubuntu"
+  describe file("/etc/default/mongodb") do
+    it { should be_file }
+    its(:content) { should match(/Managed by ansible/) }
+    its(:content) { should match(/DAEMON_OPTS="--journal"/) }
   end
 end
 

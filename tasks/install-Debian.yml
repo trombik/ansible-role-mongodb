@@ -1,0 +1,28 @@
+---
+
+- name: Create /etc/default/mongodb
+  template:
+    src: Ubuntu.default.j2
+    dest: /etc/default/mongodb
+    validate: sh -n %s
+  notify: Restart mongodb
+
+- name: Install mongodb_extra_packages
+  apt:
+    name: "{{ mongodb_extra_packages }}"
+    state: present
+
+- name: Install python-pymongo
+  apt:
+    name: python-pymongo
+    state: present
+
+- name: Install mongodb_package
+  apt:
+    name: "{{ mongodb_package }}"
+    state: present
+
+- name: Enable mongod
+  service:
+    name: "{{ mongodb_service }}"
+    enabled: true
