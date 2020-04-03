@@ -1,0 +1,24 @@
+---
+
+- name: Install mongodb_extra_packages
+  openbsd_pkg:
+    name: "{{ mongodb_extra_packages }}"
+    state: present
+
+- name: Install databases/py-mongo
+  openbsd_pkg:
+    name: py-mongo
+    state: present
+
+- name: Install mongodb_package
+  openbsd_pkg:
+    name: "{{ mongodb_package }}"
+    state: present
+
+- name: Enable mongod
+  service:
+    name: "{{ mongodb_service }}"
+    enabled: true
+    arguments: "{{ mongodb_flags }}"
+  notify:
+    - Restart mongodb

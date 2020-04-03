@@ -9,6 +9,7 @@
         - databases/mongodb40-tools
       Debian:
         - mongo-tools
+      OpenBSD: []
     mongodb_extra_packages: "{{ os_mongodb_extra_packages[ansible_os_family] }}"
     mongodb_admin_users:
       - name: root
@@ -37,6 +38,7 @@
     os_fork:
       FreeBSD: "true"
       Debian: "false"
+      OpenBSD: "true"
     mongodb_config: |
       security:
         authorization: enabled
@@ -86,4 +88,6 @@
         mongod_dbpath="{{ mongodb_db_dir }}"
       Debian: |
         DAEMON_OPTS="--journal"
+      OpenBSD:
+        -f {{ mongodb_conf_file }}
     mongodb_flags: "{{ os_mongodb_flags[ansible_os_family] }}"
