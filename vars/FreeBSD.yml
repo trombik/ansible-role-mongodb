@@ -1,3 +1,8 @@
 ---
+__mongodb_user: mongodb
+__mongodb_group: mongodb
+__mongodb_package: databases/mongodb40
+__mongodb_log_dir: /var/log/mongodb
 __mongodb_db_dir: /var/db/mongodb
-__mongodb_conf_dir: /usr/local/etc/mongodb
+__mongodb_service: mongod
+__mongodb_conf_dir: /usr/local/etc

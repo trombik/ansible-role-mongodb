@@ -1,9 +1,19 @@
 ---
-mongodb_user: mongodb
-mongodb_group: mongodb
-mongodb_log_dir: /var/log/mongodb
+mongodb_user: "{{ __mongodb_user }}"
+mongodb_group: "{{ __mongodb_group }}"
+mongodb_package: "{{ __mongodb_package }}"
+mongodb_extra_packages: []
+mongodb_log_dir: "{{ __mongodb_log_dir }}"
+mongodb_log_file: "{{ mongodb_log_dir }}/mongod.log"
 mongodb_db_dir: "{{ __mongodb_db_dir }}"
-mongodb_service: mongodb
+mongodb_service: "{{ __mongodb_service }}"
 mongodb_conf_dir: "{{ __mongodb_conf_dir }}"
-mongodb_conf_file: "{{ __mongodb_conf_dir }}/mongodb.conf"
+mongodb_conf_file: "{{ mongodb_conf_dir }}/mongod.conf"
 mongodb_flags: ""
+mongodb_debug: no
+mongodb_port: "27017"
+mongodb_host: 127.0.0.1
+mongodb_users: []
+mongodb_admin_users: []
+mongodb_config: ""
+mongodb_config_init_auth: ""

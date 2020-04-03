@@ -1,0 +1,37 @@
+---
+
+- name: Create mongod.conf for initialization
+  template:
+    src: init-auth.conf.j2
+    dest: "{{ mongodb_conf_file }}"
+  notify:
+    - Restart mongodb
+
+- name: Do flush_handlers
+  meta: flush_handlers
+
+- name: Create mongodb_admin_users
+  mongodb_user:
+    database: "{{ item.database }}"
+    login_database: "{{ item.login_database | default(omit) }}"
+    login_host: "{{ item.login_host | default(mongodb_host) }}"
+    login_port: "{{ item.login_port | default(omit) }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    roles: "{{ item.roles | default(omit) }}"
+    ssl_cert_reqs: "{{ item.ssl_cert_reqs | default('CERT_REQUIRED') }}"
+    ssl: "{{ item.ssl | default('no') }}"
+    state: present
+    update_password: "{{ item.update_password | default(omit) }}"
+  with_items: "{{ mongodb_admin_users }}"
+  no_log: "{% if mongodb_debug %}no{% else %}yes{% endif %}"
+
+- name: Create mongod.conf
+  template:
+    src: mongod.conf.j2
+    dest: "{{ mongodb_conf_file }}"
+  notify:
+    - Restart mongodb
+
+- name: Do flush_handlers
+  meta: flush_handlers

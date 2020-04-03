@@ -3,4 +3,76 @@
   roles:
     - ansible-role-mongodb
   vars:
-    mongodb_config: ""
+    mongodb_debug: yes
+    os_mongodb_extra_packages:
+      FreeBSD:
+        - databases/mongodb40-tools
+    mongodb_extra_packages: "{{ os_mongodb_extra_packages[ansible_os_family] }}"
+    mongodb_admin_users:
+      - name: root
+        database: admin
+        password: AdminPassWord
+        roles: userAdminAnyDatabase
+        # XXX when update_password is `always`, idempotent test fails.
+        # https://github.com/ansible/ansible/issues/33832
+        # https://github.com/ansible/ansible/blob/7c8b046b5fac7342fcf7882d4c84efc089e7866f/test/support/integration/plugins/modules/mongodb_user.py#L279
+        update_password: on_create
+        state: present
+
+    mongodb_users:
+      - name: foo
+        password: PassWord
+        database: admin
+        roles:
+          - db: admin
+            role: read
+        state: present
+        update_password: on_create
+      - name: bar
+        database: admin
+        state: absent
+
+    mongodb_config: |
+      security:
+        authorization: enabled
+      systemLog:
+        destination: file
+        logAppend: true
+        path: {{ mongodb_log_file }}
+      storage:
+        dbPath: {{ mongodb_db_dir }}
+        journal:
+          enabled: true
+      processManagement:
+        fork: true  # fork and run in background
+        pidFilePath: {{ mongodb_db_dir }}/mongod.lock
+        timeZoneInfo: /usr/share/zoneinfo
+      net:
+        port: {{ mongodb_port }}
+        bindIp: {{ mongodb_host }}
+
+    mongodb_config_init_auth: |
+      security:
+        authorization: disabled
+      systemLog:
+        destination: file
+        logAppend: true
+        path: {{ mongodb_log_file }}
+      storage:
+        dbPath: {{ mongodb_db_dir }}
+        journal:
+          enabled: true
+      processManagement:
+        fork: true  # fork and run in background
+        pidFilePath: {{ mongodb_db_dir }}/mongod.lock
+        timeZoneInfo: /usr/share/zoneinfo
+      net:
+        port: {{ mongodb_port }}
+        bindIp: {{ mongodb_host }}
+
+    os_mongodb_flags:
+      FreeBSD: |
+        mongod_flags="--logpath {{ mongodb_log_file }} --logappend --setParameter=disabledSecureAllocatorDomains=\\*"
+        mongod_config="{{ mongodb_conf_file }}"
+        mongod_dbpath="{{ mongodb_db_dir }}"
+    mongodb_flags: "{{ os_mongodb_flags[ansible_os_family] }}"

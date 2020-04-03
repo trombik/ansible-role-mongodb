@@ -1,6 +1,27 @@
 ---
 
-- name: Install mongodb
+- name: Create /etc/rc.conf.d/mongod
+  template:
+    src: FreeBSD.rc.j2
+    dest: /etc/rc.conf.d/mongod
+  notify: Restart mongodb
+
+- name: Install mongodb_extra_packages
   pkgng:
-    name: mongodb
+    name: "{{ mongodb_extra_packages }}"
     state: present
+
+- name: Install databases/pymongo
+  pkgng:
+    name: py{{ ansible_python.version.major }}{{ ansible_python.version.minor }}-pymongo
+    state: present
+
+- name: Install mongodb_package
+  pkgng:
+    name: "{{ mongodb_package }}"
+    state: present
+
+- name: Enable mongod
+  service:
+    name: "{{ mongodb_service }}"
+    enabled: true
