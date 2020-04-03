@@ -1,0 +1,28 @@
+---
+
+- name: Create /etc/sysconfig/mongodb
+  template:
+    src: RedHat.sysconfig.j2
+    dest: /etc/sysconfig/mongodb
+    validate: sh -n %s
+  notify: Restart mongodb
+
+- name: Install mongodb_extra_packages
+  yum:
+    name: "{{ mongodb_extra_packages }}"
+    state: present
+
+- name: Install python-pymongo
+  yum:
+    name: python-pymongo
+    state: present
+
+- name: Install mongodb_package
+  yum:
+    name: "{{ mongodb_package }}"
+    state: present
+
+- name: Enable mongod
+  service:
+    name: "{{ mongodb_service }}"
+    enabled: true

@@ -1,0 +1,8 @@
+---
+__mongodb_user: mongod
+__mongodb_group: mongod
+__mongodb_package: mongodb-org
+__mongodb_log_dir: /var/log/mongodb
+__mongodb_db_dir: /var/lib/mongodb
+__mongodb_service: mongod
+__mongodb_conf_dir: /etc
